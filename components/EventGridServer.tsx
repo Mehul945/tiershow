@@ -1,8 +1,6 @@
-'use client';
-
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { createClient } from "@/lib/supabase/server";
 import { Calendar, MapPin, Users } from 'lucide-react';
-import { useSupabaseClient } from '@/app/hooks/clerk/useSupabaseClient';
 
 type TierType = 'Free' | 'Silver' | 'Gold' | 'Platinum';
 
@@ -10,27 +8,27 @@ export interface Event {
   id: number;
   title: string;
   description: string;
-  event_date: string;
+  date: string;
+  time: string;
+  location: string;
   tier: TierType;
-  image_url: string;
+  attendees: number;
+  image: string;
 }
 
-const EventsGrid = () => {
-  const [events, setEvents] = useState<Event[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const supabase = useSupabaseClient()
-  
-  useEffect(() => {
-    const fetchEvents = async () => {
-      const { data, error } = await supabase.from('events').select<'*',Event>('*');
-      console.log(data)
-      setEvents(data || [])
-      setLoading(false)
-      if(error) {setError(error.message)}
-    };
-    fetchEvents();
-  }, []);
+const EventsGridServer = async () => {
+  const supabase = createClient();
+  const { data: events, error } = await supabase.from('events').select('*');
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 p-4 md:p-6 lg:p-8">
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="text-red-300 text-xl">Error: {error.message}</div>
+        </div>
+      </div>
+    );
+  }
 
   const getTierColor = (tier: TierType): string => {
     const colors: Record<TierType, string> = {
@@ -51,26 +49,6 @@ const EventsGrid = () => {
       day: 'numeric'
     });
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 p-4 md:p-6 lg:p-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="text-white text-xl">Loading events...</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 p-4 md:p-6 lg:p-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="text-red-300 text-xl">Error: {error}</div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 p-4 md:p-6 lg:p-8">
@@ -95,7 +73,7 @@ const EventsGrid = () => {
               {/* Event Image */}
               <div className="relative h-48 md:h-52 overflow-hidden">
                 <img
-                  src={event.image_url}
+                  src={event.image}
                   alt={event.title}
                   className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                 />
@@ -124,14 +102,32 @@ const EventsGrid = () => {
                   {/* Date & Time */}
                   <div className="flex items-center text-gray-500 text-sm">
                     <Calendar className="w-4 h-4 mr-2 flex-shrink-0" />
-                    <span>{formatDate(event.event_date)}</span>
+                    <span>{formatDate(event.date)} at {event.time}</span>
+                  </div>
+
+                  {/* Location */}
+                  <div className="flex items-center text-gray-500 text-sm">
+                    <MapPin className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <span className="truncate">{event.location}</span>
+                  </div>
+
+                  {/* Attendees */}
+                  <div className="flex items-center text-gray-500 text-sm">
+                    <Users className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <span>{event.attendees} attendees</span>
                   </div>
                 </div>
+
+                {/* Action Button */}
+                <button className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg transition-all duration-200 transform hover:scale-105">
+                  View Details
+                </button>
               </div>
             </div>
           ))}
         </div>
 
+        {/* Load More Button */}
         <div className="text-center mt-12">
           <button className="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-medium py-3 px-8 rounded-xl border border-white/20 transition-all duration-200">
             Load More Events
@@ -142,4 +138,4 @@ const EventsGrid = () => {
   );
 };
 
-export default EventsGrid;
+export default EventsGridServer; 

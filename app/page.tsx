@@ -331,11 +331,11 @@ export default function LandingPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-x-hidden">
       <Navigation />
       <SignedIn>
+        <TierPopup />
         <EventsGrid />
       </SignedIn>
       <SignedOut>
         <HeroSection />
-        <TierPopup />
         <FeaturesSection />
         <StatsSection />
         <CTASection />
