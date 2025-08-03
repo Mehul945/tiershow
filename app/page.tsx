@@ -18,9 +18,9 @@ import {
 } from 'lucide-react';
 import { useUser } from '@supabase/auth-helpers-react';
 import { LogoutButton } from "@/components/logout-button";
-import { Button } from '@/components/ui/button';
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs';
-
+import TierPopup from "@/components/TierPopup"
+import EventsGrid from '@/components/EventGrid';
 
 
 const FloatingShapes = () => {
@@ -36,7 +36,6 @@ const FloatingShapes = () => {
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const user = useUser()
-  console.log(user)
   return (
     <nav className="relative z-50 backdrop-blur-xl bg-white/5 border-b border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -71,7 +70,7 @@ const Navigation = () => {
                 </SignUpButton>
               </SignedOut>
               <SignedIn>
-                <UserButton />
+                <UserButton showName />
               </SignedIn>
             </div>}
           </div>
@@ -331,10 +330,16 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-x-hidden">
       <Navigation />
-      <HeroSection />
-      <FeaturesSection />
-      <StatsSection />
-      <CTASection />
+      <SignedIn>
+        <EventsGrid />
+      </SignedIn>
+      <SignedOut>
+        <HeroSection />
+        <TierPopup />
+        <FeaturesSection />
+        <StatsSection />
+        <CTASection />
+      </SignedOut>
       <Footer />
     </div>
   );
