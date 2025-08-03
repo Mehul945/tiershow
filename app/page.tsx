@@ -207,7 +207,7 @@ const FeaturesSection = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
+          {features.map((feature) => (
             <div
               key={feature.title}
               className="group backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-8 hover:bg-white/10 transition-all duration-500 hover:scale-105 hover:-translate-y-4"
@@ -237,7 +237,7 @@ const StatsSection = () => {
       <div className="max-w-7xl mx-auto">
         <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {stats.map((stat, index) => (
+            {stats.map((stat) => (
               <div key={stat.label} className="text-center">
                 <div className="flex justify-center mb-4">
                   <stat.icon className="w-12 h-12 text-purple-400" />

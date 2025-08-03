@@ -9,10 +9,10 @@ export default function TierPopup() {
   const [selectedTier, setSelectedTier] = useState<string>("Free");
 
   const tiers = [
-    { value: "Free", label: "Free", description: "Basic features" },
-    { value: "Silver", label: "Silver", description: "Enhanced features" },
-    { value: "Gold", label: "Gold", description: "Premium features" },
-    { value: "Platinum", label: "Platinum", description: "All features" }
+    { value: "free", label: "Free", description: "Basic features" },
+    { value: "silver", label: "Silver", description: "Enhanced features" },
+    { value: "gold", label: "Gold", description: "Premium features" },
+    { value: "platinum", label: "Platinum", description: "All features" }
   ];
 
   useEffect(() => {

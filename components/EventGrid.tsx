@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Calendar, MapPin, Users } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import { useSupabaseClient } from '@/app/hooks/clerk/useSupabaseClient';
+import Image from 'next/image';
 
 type TierType = 'Free' | 'Silver' | 'Gold' | 'Platinum';
 
@@ -24,13 +25,12 @@ const EventsGrid = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       const { data, error } = await supabase.from('events').select<'*',Event>('*');
-      console.log(data)
       setEvents(data || [])
       setLoading(false)
       if(error) {setError(error.message)}
     };
     fetchEvents();
-  }, []);
+  }, [supabase]);
 
   const getTierColor = (tier: TierType): string => {
     const colors: Record<TierType, string> = {
@@ -94,7 +94,7 @@ const EventsGrid = () => {
             >
               {/* Event Image */}
               <div className="relative h-48 md:h-52 overflow-hidden">
-                <img
+                <Image
                   src={event.image_url}
                   alt={event.title}
                   className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
