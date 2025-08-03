@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
+import { SupabaseProvider } from './providers';
+import {
+  ClerkProvider
+} from '@clerk/nextjs'
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -33,7 +37,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <ClerkProvider>
+            <SupabaseProvider>
+              {children}
+            </SupabaseProvider>
+          </ClerkProvider>
         </ThemeProvider>
       </body>
     </html>
